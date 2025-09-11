@@ -13,7 +13,11 @@ import my.connectivity.kmp.rememberNetworkStatus
 
 @Composable
 fun App() {
+
+    // get the Network Status
     val isNetworkAvailable by rememberNetworkStatus()
+
+
     Box(
         modifier = Modifier.fillMaxSize().background(Color.White),
         contentAlignment = Alignment.Center
