@@ -53,12 +53,12 @@ android {
 //https://www.jetbrains.com/help/kotlin-multiplatform-dev/multiplatform-publish-libraries.html
 mavenPublishing {
     publishToMavenCentral()
-    coordinates("my.connectivity.kmp", "shared", "1.0.0")
+    coordinates("io.github.khubaibkhan4", "connectivity-kmp", "0.0.1")
 
     pom {
         name = "ConnectivityKMP"
-        description = "Kotlin Multiplatform library"
-        url = "github url" //todo
+        description = "Compose Multiplatform Connectivity Manager for iOS, Android, WasmJs, JVM"
+        url = "https://github.com/KhubaibKhan4/ConnectivityKMP.git"
 
         licenses {
             license {
@@ -69,14 +69,14 @@ mavenPublishing {
 
         developers {
             developer {
-                id = "" //todo
-                name = "" //todo
-                email = "" //todo
+                id = "KhubaibKhan4"
+                name = "Muhammad Khubaib Imtiaz"
+                email = "18.bscs.803@gmail.com"
             }
         }
 
         scm {
-            url = "github url" //todo
+            url = "https://github.com/KhubaibKhan4/ConnectivityKMP/"
         }
     }
     if (project.hasProperty("signing.keyId")) signAllPublications()
