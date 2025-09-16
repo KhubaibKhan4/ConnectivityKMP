@@ -9,6 +9,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import my.connectivity.kmp.data.model.NetworkStatus
 import my.connectivity.kmp.rememberNetworkStatus
 
 @Composable
@@ -22,7 +23,7 @@ fun App() {
         modifier = Modifier.fillMaxSize().background(Color.White),
         contentAlignment = Alignment.Center
     ) {
-        if (isNetworkAvailable){
+        if (isNetworkAvailable == NetworkStatus.Available){
             BasicText("Connected")
         } else {
             BasicText("Disconnected")

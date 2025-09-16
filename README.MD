@@ -44,7 +44,7 @@ Add the dependency from Maven Central:
 kotlin {
     sourceSets {
         commonMain.dependencies {
-           implementation("io.github.khubaibkhan4:connectivity-kmp:0.0.1")
+           implementation("io.github.khubaibkhan4:connectivity-kmp:0.0.2")
         }
     }
 }
@@ -56,13 +56,16 @@ fun App() {
 
    // get the Network Status
    val isNetworkAvailable by rememberNetworkStatus()
+   
+   // Network Status
+   // NetworkStatus.Available, NetworkStatus.NoInternet, NetworkStatus.Lost, NetworkStatus.Unavailable, NetworkStatus.Slow
 
 
    Box(
       modifier = Modifier.fillMaxSize().background(Color.White),
       contentAlignment = Alignment.Center
    ) {
-      if (isNetworkAvailable){
+      if (isNetworkAvailable == NetworkStatus.Available){
          BasicText("Connected")
       } else {
          BasicText("Disconnected")
