@@ -53,7 +53,7 @@ android {
 //https://www.jetbrains.com/help/kotlin-multiplatform-dev/multiplatform-publish-libraries.html
 mavenPublishing {
     publishToMavenCentral()
-    coordinates("io.github.khubaibkhan4", "connectivity-kmp", "0.0.1")
+    coordinates("io.github.khubaibkhan4", "connectivity-kmp", "0.0.2")
 
     pom {
         name = "ConnectivityKMP"

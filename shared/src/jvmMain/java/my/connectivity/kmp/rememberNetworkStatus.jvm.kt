@@ -1,55 +1,76 @@
 package my.connectivity.kmp
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.produceState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
+import my.connectivity.kmp.data.model.NetworkStatus
 import java.lang.Exception
 import java.net.HttpURLConnection
 import java.net.InetAddress
 import java.net.URL
 
-@androidx.compose.runtime.Composable
-actual fun rememberNetworkStatus(): androidx.compose.runtime.State<Boolean> {
-    return produceState(initialValue = true) {
-        val checkIntervalMillis = 5000L
-        val retryAttempts = 3
-        val retryDelayMillis = 1000L
+@Composable
+actual fun rememberNetworkStatus(): State<NetworkStatus> {
+    return produceState<NetworkStatus>(initialValue = NetworkStatus.Unavailable) {
+        val checkIntervalMillis = 5000L       // run every 5s
+        val retryAttempts = 3                 // retry attempts per cycle
+        val retryDelayMillis = 500L          // 1s between retries
 
         while (true) {
-            val isCurrentlyConnected = withContext(Dispatchers.IO) {
-                var connected = false
+            val status = withContext(Dispatchers.IO) {
                 var attempts = 0
+                var success = false
+                var totalLatency = 0L
+
                 while (attempts < retryAttempts) {
                     try {
                         val url = URL("https://www.google.com/generate_204")
-                        val connection = url.openConnection() as HttpURLConnection
-                        connection.connectTimeout = 1000
-                        connection.readTimeout = 1000
-                        connection.requestMethod = "HEAD"
+                        val start = System.currentTimeMillis()
+
+                        val connection = (url.openConnection() as HttpURLConnection).apply {
+                            connectTimeout = 1000
+                            readTimeout = 1000
+                            requestMethod = "HEAD"
+                        }
+
                         val responseCode = connection.responseCode
+                        val latency = System.currentTimeMillis() - start
                         connection.disconnect()
-                        connected = (responseCode == HttpURLConnection.HTTP_NO_CONTENT || responseCode == HttpURLConnection.HTTP_OK)
-                        if (connected) {
+
+                        if (responseCode == HttpURLConnection.HTTP_NO_CONTENT ||
+                            responseCode == HttpURLConnection.HTTP_OK
+                        ) {
+                            success = true
+                            totalLatency += latency
                             break
                         }
                     } catch (e: Exception) {
-                        println("Network check attempt ${attempts + 1} error: ${e.message}")
+                        println("Network check attempt ${attempts + 1} failed: ${e.message}")
                     }
                     attempts++
-                    if (!connected && attempts < retryAttempts) {
+                    if (!success && attempts < retryAttempts) {
                         delay(retryDelayMillis)
                     }
                 }
-                connected
+
+                when {
+                    success -> {
+                        val avgLatency = if (totalLatency > 0) totalLatency / (attempts + 1) else 0
+                        if (avgLatency > 1500) NetworkStatus.Slow else NetworkStatus.Available
+                    }
+                    else -> NetworkStatus.NoInternet
+                }
             }
 
-            // Only update the state if it has changed to avoid unnecessary recompositions
-            if (value != isCurrentlyConnected) {
-                value = isCurrentlyConnected
-                println("Network Status changed to: $isCurrentlyConnected")
+            if (value != status) {
+                value = status
+                println("Network Status changed to: $status")
             }
-            delay(checkIntervalMillis) // Wait for the main interval
+
+            delay(checkIntervalMillis)
         }
     }
 }

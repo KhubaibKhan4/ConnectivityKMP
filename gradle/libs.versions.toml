@@ -5,6 +5,7 @@ agp = "8.10.0"
 maven-publish = "0.34.0"
 compose = "1.8.2"
 androidx-activityCompose = "1.10.1"
+dot-env = "4.0.0"
 
 [libraries]
 
@@ -18,3 +19,4 @@ maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "maven-publ
 compose = { id = "org.jetbrains.compose", version.ref = "compose" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 android-application = { id = "com.android.application", version.ref = "agp" }
+dot-env = { id = "co.uzzu.dotenv.gradle", version.ref = "dot-env"}
